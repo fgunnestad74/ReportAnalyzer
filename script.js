@@ -68,6 +68,9 @@ class ReportAnalyzer {
         // Initialize PDF Text Extractor
         this.pdfExtractor = new PDFTextExtractor();
         
+        // Initialize toast system
+        this.toastContainer = document.getElementById('toastContainer');
+        
         this.initializeEventListeners();
     }
 
@@ -181,6 +184,36 @@ class ReportAnalyzer {
         `;
     }
 
+    /**
+     * Show a toast notification
+     * @param {string} message - The message to display
+     * @param {string} type - The type of toast (success, error, info)
+     * @param {number} duration - Duration in milliseconds (default: 3000)
+     */
+    showToast(message, type = 'success', duration = 3000) {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        
+        toast.innerHTML = `
+            <span class="toast-message">${message}</span>
+            <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+        `;
+        
+        this.toastContainer.appendChild(toast);
+        
+        // Auto-remove after duration
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.classList.add('fade-out');
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.remove();
+                    }
+                }, 300);
+            }
+        }, duration);
+    }
+
 
 
 
@@ -217,14 +250,19 @@ class ReportAnalyzer {
 
             // Process and display results
             this.displayResults(response);
+            
+            // Show success toast
+            this.showToast('Analysis completed successfully! Results are ready.', 'success');
 
         } catch (error) {
             if (error.name === 'AbortError') {
                 console.log('Analysis was cancelled by user');
                 this.showError('Analysis was cancelled.');
+                this.showToast('Analysis was cancelled.', 'info');
             } else {
                 console.error('Analysis error:', error);
                 this.showError(`Failed to analyze the report: ${error.message}`);
+                this.showToast('Analysis failed. Please try again.', 'error');
             }
         } finally {
             // Hide loading state
@@ -241,6 +279,7 @@ class ReportAnalyzer {
         // Define the expected sections
         const sectionTags = [
             'executive_summary',
+            'team_members',
             'key_performance_indicators', 
             'market_trends',
             'ai_developments',
@@ -267,6 +306,7 @@ class ReportAnalyzer {
     getSectionTitle(key) {
         const titles = {
             'executive_summary': 'Executive Summary',
+            'team_members': 'Team Members',
             'key_performance_indicators': 'Key Performance Indicators',
             'market_trends': 'Market Trends',
             'ai_developments': 'AI Developments',
@@ -292,6 +332,7 @@ class ReportAnalyzer {
                 // Display raw response if no structure detected
                 this.displayRawResults(response);
             }
+            
         } catch (error) {
             console.error('Error displaying results:', error);
             this.displayRawResults(response);
@@ -307,6 +348,7 @@ class ReportAnalyzer {
         // Define the order of sections
         const sectionOrder = [
             'executive_summary',
+            'team_members',
             'key_performance_indicators',
             'market_trends', 
             'ai_developments',
@@ -983,16 +1025,6 @@ function stopAnalysis() {
 // Initialize the application when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     window.reportAnalyzer = new ReportAnalyzer();
-});
-
-// Export for potential module usage
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = ReportAnalyzer;
-}
-
-// Initialize the application when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    new ReportAnalyzer();
 });
 
 // Export for potential module usage
