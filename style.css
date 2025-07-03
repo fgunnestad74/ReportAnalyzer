@@ -157,6 +157,43 @@ h2:first-of-type {
     background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-purple) 100%);
     color: var(--white);
     box-shadow: var(--shadow-medium);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary.analyzing {
+    background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 50%, #45b7d1 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 2s ease infinite, pulse 1.5s ease-in-out infinite;
+    color: var(--white);
+    box-shadow: 0 0 20px rgba(255, 107, 107, 0.4);
+}
+
+.btn-primary.analyzing::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
 }
 
 .btn-primary.extract-btn {
@@ -457,7 +494,7 @@ h2:first-of-type {
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 0.9rem;
     font-weight: 700;
     transition: all 0.3s ease;
     box-shadow: var(--shadow-medium);

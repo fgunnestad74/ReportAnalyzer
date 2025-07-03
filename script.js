@@ -115,7 +115,7 @@ class ReportAnalyzer {
      */
     clearFields() {
         this.reportField.value = '';
-        this.resultsContainer.innerHTML = '<p class="placeholder-text">Analysis results will appear here after you click "Analyze Report".</p>';
+        this.resultsContainer.innerHTML = '<p class="placeholder-text">Analysis results will appear here after you click "Analyze Information".</p>';
         this.downloadSection.style.display = 'none';
     }
 
@@ -150,6 +150,7 @@ class ReportAnalyzer {
     showLoading() {
         this.loadingIndicator.style.display = 'block';
         this.analyzeBtn.disabled = true;
+        this.analyzeBtn.classList.add('analyzing');
         this.analyzeBtn.textContent = 'Analyzing...';
         this.stopAnalysisBtn.style.display = 'inline-block';
         this.resultsContainer.innerHTML = '';
@@ -162,7 +163,8 @@ class ReportAnalyzer {
     hideLoading() {
         this.loadingIndicator.style.display = 'none';
         this.analyzeBtn.disabled = false;
-        this.analyzeBtn.textContent = 'Analyze Report';
+        this.analyzeBtn.classList.remove('analyzing');
+        this.analyzeBtn.textContent = 'Analyze Information';
         this.stopAnalysisBtn.style.display = 'none';
         this.isAnalyzing = false;
         this.currentAnalysisController = null;
@@ -178,6 +180,8 @@ class ReportAnalyzer {
             </div>
         `;
     }
+
+
 
 
 
